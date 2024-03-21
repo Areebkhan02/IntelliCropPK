@@ -17,6 +17,7 @@ const int DE_PIN = 23;
 
 int device_value = 1;
 
+float check;
 float windspeed;
 float winddirection;
 float solarradiation;
