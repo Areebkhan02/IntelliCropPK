@@ -3,8 +3,8 @@
 #define SECRET
 #define THINGNAME "ESP32_2_Arduino"  //change this
  
-const char WIFI_SSID[] = "DESKTOP-ED23IDO 6716";  //change this
-const char WIFI_PASSWORD[] = "82;b30U2";           //change this
+const char WIFI_SSID[] = "HU-aStDev";  //change this
+const char WIFI_PASSWORD[] = "And11+#321";           //change this
 const char AWS_IOT_ENDPOINT[] = "a2w1yq8cwf2ptk-ats.iot.us-east-2.amazonaws.com";       //change this
  
 // Amazon Root CA 1

@@ -220,8 +220,8 @@ void loop()
   Serial.println();
   publishMessage();
   client.loop();
-  delay(1000);
-  //connectAWS();
+  delay(120000);
+  connectAWS();
 }
 
 // Print out the error received from the Modbus library
