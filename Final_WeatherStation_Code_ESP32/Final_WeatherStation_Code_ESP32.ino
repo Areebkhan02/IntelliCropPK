@@ -7,6 +7,10 @@
 #include <ModbusMaster.h>
 #include <HardwareSerial.h>
 
+#include "DHT.h"
+#define DHTPIN 4
+#define DHTTYPE DHT11   // DHT 11
+
 #define AWS_IOT_PUBLISH_TOPIC   "ESP32_2_Arduino/Pub"
 #define AWS_IOT_SUBSCRIBE_TOPIC "ESP32_2_Arduino/Sub"
 
@@ -15,12 +19,16 @@ const int DI_PIN = 18;  // Transmit (data out) pin
 const int RE_PIN = 22;
 const int DE_PIN = 23;
 
+DHT dht(DHTPIN, DHTTYPE);
+
 int device_value = 1;
 
 float windspeed;
 float winddirection;
 float solarradiation;
 float rainsensor;
+float airTemperature;
+float airHumidity;
 
 HardwareSerial swSerial(2);  // Use Serial2 for communication
 ModbusMaster node;
@@ -80,6 +88,8 @@ void publishMessage()
   doc["Wind Direction"] = winddirection;
   doc["Solar Radiation"] = solarradiation;
   doc["Rain Sensor"] = rainsensor;
+  doc["Air Temperature"] = airTemperature; 
+  doc["Air Humidity"] = airHumidity;
   
 
   char jsonBuffer[512];
@@ -119,6 +129,7 @@ void setup()
   Serial.begin(9600);
 
   // Configure the MAX485 RE & DE control signals and enable receive mode
+  dht.begin();
   pinMode(RE_PIN, OUTPUT);
   pinMode(DE_PIN, OUTPUT);
   digitalWrite(DE_PIN, LOW);
@@ -137,11 +148,25 @@ void setup()
 
 void loop()
 {
+
+  //--------------------------------------------------------//
+   airHumidity = dht.readHumidity();
+   airTemperature =  dht.readTemperature();
+   if (isnan(airHumidity) || isnan(airTemperature)) {
+         Serial.println("Failed to read from DHT sensor!");
+         return;
+      }
+    Serial.print("Humidity: ");
+    Serial.print(airHumidity);
+    Serial.print("%  Temperature: ");
+    Serial.print(airTemperature);
+    Serial.print("°C ");
+    Serial.println();
   uint8_t result;
 
   // Remove any characters from the receive buffer
   // Ask for 7x 16-bit words starting at register address 0x0000
-   node.begin(device_value, swSerial);
+  node.begin(device_value, swSerial);
   result = node.readHoldingRegisters(0x00, 2);
 
   if (result == node.ku8MBSuccess)
@@ -171,6 +196,7 @@ void loop()
         Serial.println(" W/m2");
     }
     
+    
   }
   else
   {
@@ -190,6 +216,7 @@ void loop()
       device_value = 1;
     }
 
+  
   Serial.println();
   publishMessage();
   client.loop();
