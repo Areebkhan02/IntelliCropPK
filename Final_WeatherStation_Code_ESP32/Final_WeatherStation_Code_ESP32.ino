@@ -1,4 +1,4 @@
-#include "2nd_Areeb_AWS_Keys.h"
+#include "Areeb_AWS_Keys.h"
 #include <WiFiClientSecure.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
@@ -11,8 +11,8 @@
 #define DHTPIN 4
 #define DHTTYPE DHT11   // DHT 11
 
-#define AWS_IOT_PUBLISH_TOPIC   "ESP32_2_Arduino/Pub"
-#define AWS_IOT_SUBSCRIBE_TOPIC "ESP32_2_Arduino/Sub"
+#define AWS_IOT_PUBLISH_TOPIC   "ESP32_Arduino/Pub"
+#define AWS_IOT_SUBSCRIBE_TOPIC "ESP32_Arduino/Sub"
 
 const int RO_PIN = 19;  // Receive (data in) pin
 const int DI_PIN = 18;  // Transmit (data out) pin
@@ -220,7 +220,9 @@ void loop()
   Serial.println();
   publishMessage();
   client.loop();
-  delay(120000);
+  delay(3000);
+  esp_sleep_enable_timer_wakeup(120 * 1000000); //light sleep for 120 seconds
+  esp_light_sleep_start();
   connectAWS();
 }
 
