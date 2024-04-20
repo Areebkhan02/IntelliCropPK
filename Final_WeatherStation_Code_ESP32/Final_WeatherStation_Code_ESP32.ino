@@ -1,4 +1,4 @@
-#include "Areeb_AWS_Keys.h"
+#include "2nd_Areeb_AWS_Keys.h"
 #include <WiFiClientSecure.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
@@ -11,8 +11,8 @@
 #define DHTPIN 4
 #define DHTTYPE DHT11   // DHT 11
 
-#define AWS_IOT_PUBLISH_TOPIC   "ESP32_Arduino/Pub"
-#define AWS_IOT_SUBSCRIBE_TOPIC "ESP32_Arduino/Sub"
+#define AWS_IOT_PUBLISH_TOPIC   "ESP32_2_Arduino/Pub"
+#define AWS_IOT_SUBSCRIBE_TOPIC "ESP32_2_Arduino/Sub"
 
 const int RO_PIN = 19;  // Receive (data in) pin
 const int DI_PIN = 18;  // Transmit (data out) pin
@@ -42,11 +42,15 @@ void connectAWS()   // function start
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
  
   Serial.println("Connecting to Wi-Fi");
- 
+  int check = 0;
   while (WiFi.status() != WL_CONNECTED)
   {
-    delay(500);
+    delay(600);
     Serial.print(".");
+    check = check + 1;
+    if (check >= 40){
+      ESP.restart();
+      }
   }
  
   // Configure WiFiClientSecure to use the AWS IoT device credentials
